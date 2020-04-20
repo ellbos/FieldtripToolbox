@@ -46,3 +46,12 @@ dataFC_LP = ft_redefinetrial(cfg, data_all);
 save dataFIC_LP dataFIC_LP
 save dataFC_LP dataFC_LP
 save dataIC_LP dataIC_LP
+
+%{
+% Load the subsets of trials
+load dataFIC_LP
+load dataFC_LP
+load dataIC_LP
+% I figure this step is redundant if I just split the data
+%}
+
