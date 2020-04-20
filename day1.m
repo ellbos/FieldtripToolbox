@@ -27,28 +27,28 @@ data_all = ft_preprocessing(cfg);
 
 %% Split and save
 
-% Fully incongruent (FIC)
+% Fully InCongruent (FIC)
 cfg = [];
 cfg.trials = data_all.trialinfo == 3;
 dataFIC_LP = ft_redefinetrial(cfg, data_all);
 
-% Initially congruent (IC)
+% Initially Congruent (IC)
 cfg = [];
 cfg.trials = data_all.trialinfo == 9;
 dataIC_LP = ft_redefinetrial(cfg, data_all);
 
-% Fully congruent (FC)
+% Fully Congruent (FC)
 cfg = [];
 cfg.trials = data_all.trialinfo == 5;
 dataFC_LP = ft_redefinetrial(cfg, data_all);
 
-% Save the three subsets of trials
+% save the three subsets of trials
 save dataFIC_LP dataFIC_LP
 save dataFC_LP dataFC_LP
 save dataIC_LP dataIC_LP
 
 %{
-% Load the subsets of trials
+% load the subsets of trials
 load dataFIC_LP
 load dataFC_LP
 load dataIC_LP
