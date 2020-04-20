@@ -70,15 +70,16 @@ avgIC = ft_timelockanalysis(cfg, dataIC_LP);
 % plot the results
 
 % multiplot: all sensors, 1 condition
+figure;
 cfg = [];
 cfg.showlabels = 'yes';
 cfg.fontsize = 6;
 cfg.layout = 'CTF151_helmet.mat';
 cfg.ylim = [-3e-13 3e-13];
-figure;
 ft_multiplotER(cfg, avgFIC);
 
 % multiplot: all sensors, 3 conditions
+figure;
 cfg = [];
 cfg.showlabels = 'no';
 cfg.fontsize = 6;
@@ -86,32 +87,31 @@ cfg.layout = 'CTF151_helmet.mat';
 cfg.baseline = [-0.2 0];
 cfg.xlim = [-0.2 1.0];
 cfg.ylim = [-3e-13 3e-13];
-figure;
 ft_multiplotER(cfg, avgFC, avgIC, avgFIC);
 
 % singleplot: 1 sensor, 3 conditions
+figure;
 cfg = [];
 cfg.xlim = [-0.2 1.0];
 cfg.ylim = [-1e-13 3e-13];
 cfg.channel = 'MLC24';
 clf;
-figure;
 ft_singleplotER(cfg, avgFC, avgIC, avgFIC);
 
 % topographic: 1 condition, 1 time interval
+figure;
 cfg = [];
 cfg.xlim = [0.3 0.5];
 cfg.colorbar = 'yes';
 cfg.layout = 'CTF151_helmet.mat';
-figure;
 ft_topoplotER(cfg, avgFIC);
 
 % topographic: 1 condition, 12 time intervals
+figure;
 cfg = [];
 cfg.xlim = [-0.2 : 0.1 : 1.0];  % Define 12 time intervals
 cfg.zlim = [-2e-13 2e-13];      % Set the 'color' limits.
 cfg.layout = 'CTF151_helmet.mat';
 clf;
-figure;
 ft_topoplotER(cfg, avgFIC);
 
