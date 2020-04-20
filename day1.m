@@ -115,3 +115,32 @@ cfg.layout = 'CTF151_helmet.mat';
 clf;
 ft_topoplotER(cfg, avgFIC);
 
+%% Planar gradient
+
+cfg                 = [];
+cfg.feedback        = 'yes';
+cfg.method          = 'template';
+cfg.neighbours      = ft_prepare_neighbours(cfg, avgFIC);
+
+cfg.planarmethod    = 'sincos';
+avgFICplanar        = ft_megplanar(cfg, avgFIC);
+
+% compute amplitude of planar gradient
+cfg = [];
+avgFICplanarComb = ft_combineplanar(cfg, avgFICplanar);
+
+% plot the results
+figure;
+clf
+subplot(121); % this has the original avgFIC
+    cfg = [];
+    cfg.xlim = [0.3 0.5];
+    cfg.zlim = 'maxmin';
+    cfg.colorbar = 'yes';
+    cfg.layout = 'CTF151_helmet.mat';
+    ft_topoplotER(cfg, avgFIC)
+    colorbar; % you can also try out cfg.colorbar = 'south'
+subplot(122); % this has the combined planar gradient avgFIC
+    cfg.zlim = 'maxabs';
+    cfg.layout = 'CTF151_helmet.mat';
+    ft_topoplotER(cfg, avgFICplanarComb);
