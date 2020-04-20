@@ -55,3 +55,18 @@ load dataIC_LP
 % I figure this step is redundant if I just split the data
 %}
 
+%% Timelock analysis
+
+% average over trials
+cfg = [];
+avgFIC = ft_timelockanalysis(cfg, dataFIC_LP);
+avgFC = ft_timelockanalysis(cfg, dataFC_LP);
+avgIC = ft_timelockanalysis(cfg, dataIC_LP);
+
+% plot the results
+cfg = [];
+cfg.showlabels = 'yes';
+cfg.fontsize = 6;
+cfg.layout = 'CTF151_helmet.mat';
+cfg.ylim = [-3e-13 3e-13];
+ft_multiplotER(cfg, avgFIC);
