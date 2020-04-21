@@ -54,7 +54,7 @@ TFRhann = ft_freqanalysis(cfg, dataFIC);
 
 % plot the results
 
-% multiplot: all channels, time-frequency difference compared to the baseline
+% multiplot: all channels, absolute baseline
 cfg = [];
 cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'absolute';
@@ -64,7 +64,7 @@ cfg.layout       = 'CTF151_helmet.mat';
 figure;
 ft_multiplotTFR(cfg, TFRhann);
 
-% singleplot: one channel, time-frequency difference compared to the baseline
+% singleplot: one channel, absolute baseline
 cfg = [];
 cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'absolute';
@@ -75,7 +75,7 @@ cfg.layout       = 'CTF151_helmet.mat';
 figure;
 ft_singleplotTFR(cfg, TFRhann);
 
-% topoplot: 
+% topoplot: all channels, absolute baseline
 cfg = [];
 cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'absolute';
@@ -104,7 +104,7 @@ TFRhann7 = ft_freqanalysis(cfg, dataFIC);
 
 % plot the results
 
-% singleplot: one channel, time-frequency difference compared to the baseline
+% singleplot: one channel, absolute baseline
 cfg              = [];
 cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'absolute';
@@ -132,7 +132,7 @@ TFRmult = ft_freqanalysis(cfg, dataFIC);
 
 % plot the result
 
-% multiplot: 
+% multiplot: all channels, absolute baseline
 cfg = [];
 cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'absolute';
