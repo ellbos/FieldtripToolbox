@@ -133,17 +133,15 @@ cfg.method       = 'mtmconvol';
 cfg.taper        = 'hanning';
 cfg.foi          = 2:1:30;
 cfg.toi          = -0.5:0.05:1.5;
-cfg.t_ftimwin    = 7./cfg.foi;  % 7 cycles per time window
-TFRhann7 = ft_freqanalysis(cfg, dataFIC);
-
 % 4 cycles per time window
 cfg.t_ftimwin    = 4./cfg.foi;
 TFRhann4 = ft_freqanalysis(cfg, dataFIC);
-
 % 5 cycles per time window:
 cfg.t_ftimwin    = 5./cfg.foi;
 TFRhann5 = ft_freqanalysis(cfg, dataFIC);
-
+% 7 cycles per time window
+cfg.t_ftimwin    = 7./cfg.foi;  
+TFRhann7 = ft_freqanalysis(cfg, dataFIC);
 % 10 cycles per time window:
 cfg.t_ftimwin    = 10./cfg.foi;
 TFRhann10 = ft_freqanalysis(cfg, dataFIC);
@@ -161,18 +159,18 @@ cfg.interactive  = 'no';
 cfg.layout       = 'CTF151_helmet.mat';
 figure;
 subplot(221)
-ft_singleplotTFR(cfg, TFRhann7);
-subplot(222)
 ft_singleplotTFR(cfg, TFRhann4);
-subplot(223)
+subplot(222)
 ft_singleplotTFR(cfg, TFRhann5);
+subplot(223)
+ft_singleplotTFR(cfg, TFRhann7);
 subplot(224)
 ft_singleplotTFR(cfg, TFRhann10);
 
 %% Time-frequency analysis 3
 % multitapers
 
-% configuration for the multitapers?
+% configuration for the multitapers
 cfg = [];
 cfg.output     = 'pow';
 cfg.channel    = 'MEG';
