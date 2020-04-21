@@ -91,7 +91,7 @@ cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'relative';
 cfg.maskstyle    = 'saturation';
 cfg.zlim         = [0 3.0];
-cfg.channel      = 'MLC24';
+cfg.channel      = 'MRC15';
 cfg.layout       = 'CTF151_helmet.mat';
 figure;
 ft_singleplotTFR(cfg, TFRhann);
