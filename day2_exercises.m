@@ -148,8 +148,6 @@ TFRhann5 = ft_freqanalysis(cfg, dataFIC);
 cfg.t_ftimwin    = 10./cfg.foi;
 TFRhann10 = ft_freqanalysis(cfg, dataFIC);
 
-
-
 % plot the results
 
 % singleplot: one channel, time-frequency difference compared to the baseline
@@ -171,3 +169,55 @@ ft_singleplotTFR(cfg, TFRhann5);
 subplot(224)
 ft_singleplotTFR(cfg, TFRhann10);
 
+%% Time-frequency analysis 3
+% multitapers
+
+% configuration for the multitapers?
+cfg = [];
+cfg.output     = 'pow';
+cfg.channel    = 'MEG';
+cfg.method     = 'mtmconvol';
+cfg.foi        = 1:2:30;
+cfg.t_ftimwin  = 5./cfg.foi;    % the length of the sliding time-window in seconds 
+cfg.tapsmofrq  = 0.4 *cfg.foi;  % the width of frequency smoothing in Hz
+cfg.toi        = -0.5:0.05:1.5;
+TFRmult = ft_freqanalysis(cfg, dataFIC);
+
+% plot the result
+
+% multiplot: all channels, absolute baseline
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.zlim         = [-2e-27 2e-27];
+cfg.showlabels   = 'yes';
+cfg.layout       = 'CTF151_helmet.mat';
+cfg.colorbar     = 'yes';
+figure;
+ft_multiplotTFR(cfg, TFRmult)
+
+%% Time-frequency analysis 4
+% Morlet wavelets
+
+% calculate TFRs using Morlet wavelet
+cfg = [];
+cfg.channel    = 'MEG';
+cfg.method     = 'wavelet';
+cfg.width      = 7;
+cfg.output     = 'pow';
+cfg.foi        = 1:2:30;
+cfg.toi        = -0.5:0.05:1.5;
+TFRwave = ft_freqanalysis(cfg, dataFIC);
+
+% plot the result
+
+% multiplot: all channels, absolute baseline
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.zlim         = [-2e-25 2e-25];
+cfg.showlabels   = 'yes';
+cfg.layout       = 'CTF151_helmet.mat';
+cfg.colorbar     = 'yes';
+figure;
+ft_multiplotTFR(cfg, TFRwave)
