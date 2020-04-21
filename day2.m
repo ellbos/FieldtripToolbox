@@ -52,3 +52,38 @@ cfg.t_ftimwin    = ones(length(cfg.foi),1).*0.5;   % length of time window = 0.5
 cfg.toi          = -0.5:0.05:1.5;                  % time window "slides" from -0.5 to 1.5 sec in steps of 0.05 sec (50 ms)
 TFRhann = ft_freqanalysis(cfg, dataFIC);
 
+% plot the results
+
+% multiplot: all channels, time-frequency difference compared to the baseline
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.zlim         = [-2.5e-27 2.5e-27];
+cfg.showlabels   = 'yes';
+cfg.layout       = 'CTF151_helmet.mat';
+figure;
+ft_multiplotTFR(cfg, TFRhann);
+
+% singleplot: one channel, time-frequency difference compared to the baseline
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.maskstyle    = 'saturation';
+cfg.zlim         = [-2.5e-27 2.5e-27];
+cfg.channel      = 'MRC15';
+cfg.layout       = 'CTF151_helmet.mat';
+figure;
+ft_singleplotTFR(cfg, TFRhann);
+
+% topoplot: 
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.xlim         = [0.9 1.3];
+cfg.zlim         = [-1e-27 1e-27];
+cfg.ylim         = [15 20];
+cfg.marker       = 'on';
+cfg.layout       = 'CTF151_helmet.mat';
+cfg.colorbar     = 'yes';
+figure;
+ft_topoplotTFR(cfg, TFRhann);
