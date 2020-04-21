@@ -1,7 +1,7 @@
 %% Setup
 
 cfg                         = [];
-cfg.dataset                 = 'Subject01.ds';
+cfg.dataset                 = 'Subject01/Subject01.ds';
 cfg.trialfun                = 'ft_trialfun_general'; % this is the default
 cfg.trialdef.eventtype      = 'backpanel trigger';
 cfg.trialdef.eventvalue     = [3 5 9]; % the values of the stimulus trigger for the three conditions
