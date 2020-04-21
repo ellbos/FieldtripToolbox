@@ -197,25 +197,39 @@ ft_multiplotTFR(cfg, TFRmult)
 %% Time-frequency analysis 4
 % Morlet wavelets
 
-% calculate TFRs using Morlet wavelet
+% calculate TFRs using Morlet wavelet: 4 different widths
 cfg = [];
 cfg.channel    = 'MEG';
 cfg.method     = 'wavelet';
-cfg.width      = 7;
 cfg.output     = 'pow';
 cfg.foi        = 1:2:30;
 cfg.toi        = -0.5:0.05:1.5;
-TFRwave = ft_freqanalysis(cfg, dataFIC);
+cfg.width      = 3;
+TFRwave3 = ft_freqanalysis(cfg, dataFIC);
+cfg.width      = 5;
+TFRwave5 = ft_freqanalysis(cfg, dataFIC);
+cfg.width      = 7;     % this was the standard one
+TFRwave7 = ft_freqanalysis(cfg, dataFIC);
+cfg.width      = 10;
+TFRwave10 = ft_freqanalysis(cfg, dataFIC);
 
 % plot the result
 
-% multiplot: all channels, absolute baseline
-cfg = [];
+% singleplot: one channel, four different widths
+cfg              = [];
 cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'absolute';
+cfg.maskstyle    = 'saturation';
 cfg.zlim         = [-2e-25 2e-25];
-cfg.showlabels   = 'yes';
+cfg.channel      = 'MLC24';
+cfg.interactive  = 'no';
 cfg.layout       = 'CTF151_helmet.mat';
-cfg.colorbar     = 'yes';
 figure;
-ft_multiplotTFR(cfg, TFRwave)
+subplot(221)
+ft_singleplotTFR(cfg, TFRwave3)
+subplot(222)
+ft_singleplotTFR(cfg, TFRwave5)
+subplot(223)
+ft_singleplotTFR(cfg, TFRwave7)
+subplot(224)
+ft_singleplotTFR(cfg, TFRwave10)
