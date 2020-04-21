@@ -143,3 +143,28 @@ cfg.colorbar     = 'yes';
 figure;
 ft_multiplotTFR(cfg, TFRmult)
 
+%% Time-frequency analysis 4
+% Morlet wavelets
+
+% calculate TFRs using Morlet wavelet
+cfg = [];
+cfg.channel    = 'MEG';
+cfg.method     = 'wavelet';
+cfg.width      = 7;
+cfg.output     = 'pow';
+cfg.foi        = 1:2:30;
+cfg.toi        = -0.5:0.05:1.5;
+TFRwave = ft_freqanalysis(cfg, dataFIC);
+
+% plot the result
+
+% multiplot: all channels, absolute baseline
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.zlim         = [-2e-25 2e-25];
+cfg.showlabels   = 'yes';
+cfg.layout       = 'CTF151_helmet.mat';
+cfg.colorbar     = 'yes';
+figure;
+ft_multiplotTFR(cfg, TFRwave)
