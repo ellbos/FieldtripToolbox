@@ -34,7 +34,7 @@ dataFIC = ft_redefinetrial(cfg, data_all);
 % save
 save dataFIC dataFIC
 
-%% Time-frequency analysis
+%% Time-frequency analysis 1
 % Hanning taper, fixed window length
 
 %{
@@ -87,3 +87,32 @@ cfg.layout       = 'CTF151_helmet.mat';
 cfg.colorbar     = 'yes';
 figure;
 ft_topoplotTFR(cfg, TFRhann);
+
+%% Time-frequency analysis 2
+% Hanning taper, frequency dependent window length
+
+% configuration for a 7-cycle time window
+cfg              = [];
+cfg.output       = 'pow';
+cfg.channel      = 'MRC15';
+cfg.method       = 'mtmconvol';
+cfg.taper        = 'hanning';
+cfg.foi          = 2:1:30;
+cfg.t_ftimwin    = 7./cfg.foi;  % 7 cycles per time window
+cfg.toi          = -0.5:0.05:1.5;
+TFRhann7 = ft_freqanalysis(cfg, dataFIC);
+
+% plot the results
+
+% singleplot: one channel, time-frequency difference compared to the baseline
+cfg              = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.maskstyle    = 'saturation';
+cfg.zlim         = [-2e-27 2e-27];
+cfg.channel      = 'MRC15';
+cfg.interactive  = 'no';
+cfg.layout       = 'CTF151_helmet.mat';
+figure
+ft_singleplotTFR(cfg, TFRhann7);
+
