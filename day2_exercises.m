@@ -64,6 +64,16 @@ cfg.layout       = 'CTF151_helmet.mat';
 figure;
 ft_multiplotTFR(cfg, TFRhann);
 
+% multiplot: all channels, time-frequency difference compared to the baseline
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'relative';
+cfg.zlim         = [0 3.0];
+cfg.showlabels   = 'yes';
+cfg.layout       = 'CTF151_helmet.mat';
+figure;
+ft_multiplotTFR(cfg, TFRhann);
+
 % singleplot: one channel, time-frequency difference compared to the baseline
 cfg = [];
 cfg.baseline     = [-0.5 -0.1];
@@ -75,12 +85,36 @@ cfg.layout       = 'CTF151_helmet.mat';
 figure;
 ft_singleplotTFR(cfg, TFRhann);
 
+% singleplot: one channel, time-frequency difference compared to the baseline
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'relative';
+cfg.maskstyle    = 'saturation';
+cfg.zlim         = [0 3.0];
+cfg.channel      = 'MLC24';
+cfg.layout       = 'CTF151_helmet.mat';
+figure;
+ft_singleplotTFR(cfg, TFRhann);
+
 % topoplot: 
 cfg = [];
 cfg.baseline     = [-0.5 -0.1];
 cfg.baselinetype = 'absolute';
 cfg.xlim         = [0.9 1.3];
 cfg.zlim         = [-1e-27 1e-27];
+cfg.ylim         = [15 20];
+cfg.marker       = 'on';
+cfg.layout       = 'CTF151_helmet.mat';
+cfg.colorbar     = 'yes';
+figure;
+ft_topoplotTFR(cfg, TFRhann);
+
+% topoplot: 
+cfg = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'relative';
+cfg.xlim         = [0.9 1.3];
+cfg.zlim         = [0 3.0];
 cfg.ylim         = [15 20];
 cfg.marker       = 'on';
 cfg.layout       = 'CTF151_helmet.mat';
