@@ -121,3 +121,53 @@ cfg.layout       = 'CTF151_helmet.mat';
 cfg.colorbar     = 'yes';
 figure;
 ft_topoplotTFR(cfg, TFRhann);
+
+%% Time-frequency analysis 2
+% Hanning taper, frequency dependent window length
+
+% configuration for a 7-cycle time window
+cfg              = [];
+cfg.output       = 'pow';
+cfg.channel      = 'MRC15';
+cfg.method       = 'mtmconvol';
+cfg.taper        = 'hanning';
+cfg.foi          = 2:1:30;
+cfg.toi          = -0.5:0.05:1.5;
+cfg.t_ftimwin    = 7./cfg.foi;  % 7 cycles per time window
+TFRhann7 = ft_freqanalysis(cfg, dataFIC);
+
+% 4 cycles per time window
+cfg.t_ftimwin    = 4./cfg.foi;
+TFRhann4 = ft_freqanalysis(cfg, dataFIC);
+
+% 5 cycles per time window:
+cfg.t_ftimwin    = 5./cfg.foi;
+TFRhann5 = ft_freqanalysis(cfg, dataFIC);
+
+% 10 cycles per time window:
+cfg.t_ftimwin    = 10./cfg.foi;
+TFRhann10 = ft_freqanalysis(cfg, dataFIC);
+
+
+
+% plot the results
+
+% singleplot: one channel, time-frequency difference compared to the baseline
+cfg              = [];
+cfg.baseline     = [-0.5 -0.1];
+cfg.baselinetype = 'absolute';
+cfg.maskstyle    = 'saturation';
+cfg.zlim         = [-2e-27 2e-27];
+cfg.channel      = 'MRC15';
+cfg.interactive  = 'no';
+cfg.layout       = 'CTF151_helmet.mat';
+figure;
+subplot(221)
+ft_singleplotTFR(cfg, TFRhann7);
+subplot(222)
+ft_singleplotTFR(cfg, TFRhann4);
+subplot(223)
+ft_singleplotTFR(cfg, TFRhann5);
+subplot(224)
+ft_singleplotTFR(cfg, TFRhann10);
+
