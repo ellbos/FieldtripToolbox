@@ -82,9 +82,7 @@ cfg.resolution = 1;   % use a 3-D grid with a 1 cm resolution
 cfg.sourcemodel.unit       = 'cm';
 grid = ft_prepare_leadfield(cfg);
 
-%% Source analysis
-
-% without contrasting condition
+%% Source analysis: without contrasting condition
 
 cfg              = [];
 cfg.method       = 'dics';
