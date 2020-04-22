@@ -86,3 +86,7 @@ cfg.latency             = [0 1];       % time interval over which the experiment
 [stat] = ft_timelockstatistics(cfg, timelockFIC, timelockFC);
 
 % save the output
+save stat_ERF_axial_FICvsFC stat;
+
+% load output
+load stat_ERF_axial_FICvsFC
