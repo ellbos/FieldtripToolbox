@@ -80,6 +80,7 @@ cfg.reducerank      = 2;
 cfg.channel         = {'MEG','-MLP31', '-MLO12'};
 cfg.resolution = 1;   % use a 3-D grid with a 1 cm resolution
 cfg.sourcemodel.unit       = 'cm';
+cfg.normalize       = 'yes';
 grid = ft_prepare_leadfield(cfg);
 
 %% Source analysis: without contrasting condition
