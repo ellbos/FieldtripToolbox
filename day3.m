@@ -201,3 +201,46 @@ cfg.funcolorlim   = [0.0 maxval];
 cfg.opacitylim    = [0.0 maxval];
 cfg.opacitymap    = 'rampup';
 ft_sourceplot(cfg, sourceDiffInt);
+
+%% Plotting options
+
+% plot an orthogonal cut
+cfg = [];
+cfg.method        = 'ortho';
+cfg.funparameter  = 'pow';
+cfg.maskparameter = cfg.funparameter;
+cfg.funcolorlim   = [0.0 maxval];
+cfg.opacitylim    = [0.0 maxval];
+cfg.opacitymap    = 'rampup';
+ft_sourceplot(cfg, sourceDiffInt);
+
+% volume normalization
+cfg = [];
+cfg.nonlinear     = 'no';
+sourceDiffIntNorm = ft_volumenormalise(cfg, sourceDiffInt);
+
+% plot an orthogonal cut in an interactive window
+cfg = [];
+cfg.method        = 'ortho';
+cfg.interactive   = 'yes';
+cfg.funparameter  = 'pow';
+cfg.maskparameter = cfg.funparameter;
+cfg.funcolorlim   = [0.0 maxval];
+cfg.opacitylim    = [0.0 maxval];
+cfg.opacitymap    = 'rampup';
+ft_sourceplot(cfg, sourceDiffIntNorm);
+
+% source plot
+cfg = [];
+cfg.method         = 'surface';
+cfg.funparameter   = 'pow';
+cfg.maskparameter  = cfg.funparameter;
+cfg.funcolorlim    = [0.0 maxval];
+cfg.funcolormap    = 'parula';
+cfg.opacitylim     = [0.0 maxval];
+cfg.opacitymap     = 'rampup';
+cfg.projmethod     = 'nearest';
+cfg.surffile       = 'surface_white_both.mat';
+cfg.surfdownsample = 10;
+ft_sourceplot(cfg, sourceDiffIntNorm);
+view ([90 0])
