@@ -46,3 +46,39 @@ cfg.output    = 'powandcsd';
 cfg.tapsmofrq = 4;
 cfg.foilim    = [18 18];
 freqPost = ft_freqanalysis(cfg, dataPost);
+
+%% The forward model and lead field matrix
+% Head model
+
+% load segmented MRI from Fieldtrip
+load segmentedmri
+
+%{
+% segmentation
+mri = ft_read_mri('Subject01/Subject01.mri');
+cfg = [];
+cfg.write      = 'no';
+[segmentedmri] = ft_volumesegment(cfg, mri);
+%}
+
+% prepare head model from segmented brain surface
+cfg = [];
+cfg.method = 'singleshell';
+headmodel = ft_prepare_headmodel(cfg, segmentedmri);
+
+% visualise the head model
+figure
+ft_plot_sens(freqPost.grad);
+hold on
+ft_plot_headmodel(ft_convert_units(headmodel,'cm'));
+
+% lead fields
+cfg                 = [];
+cfg.grad            = freqPost.grad;
+cfg.headmodel       = headmodel;
+cfg.reducerank      = 2;
+cfg.channel         = {'MEG','-MLP31', '-MLO12'};
+cfg.resolution = 1;   % use a 3-D grid with a 1 cm resolution
+cfg.sourcemodel.unit       = 'cm';
+grid = ft_prepare_leadfield(cfg);
+
