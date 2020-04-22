@@ -136,3 +136,68 @@ cfg.funcolorlim   = [4.0 maxval];
 cfg.opacitylim    = [4.0 maxval];
 cfg.opacitymap    = 'rampup';
 ft_sourceplot(cfg, sourceNAIInt);
+
+%% Source analysis: contrasting activity to another interval
+
+% compute a single data structure with both conditions, 
+% and compute the frequency domain CSD
+
+dataAll = ft_appenddata([], dataPre, dataPost);
+
+cfg = [];
+cfg.method    = 'mtmfft';
+cfg.output    = 'powandcsd';
+cfg.tapsmofrq = 4;
+cfg.foilim    = [18 18];
+freqAll = ft_freqanalysis(cfg, dataAll);
+
+% compute inverse filter based on both conditions
+cfg                     = [];
+cfg.method              = 'dics';
+cfg.frequency           = 18;
+cfg.sourcemodel         = grid;
+cfg.headmodel           = headmodel;
+cfg.dics.projectnoise   = 'yes';
+cfg.dics.lambda         = '5%';
+cfg.dics.keepfilter     = 'yes';
+cfg.dics.realfilter     = 'yes';
+sourceAll = ft_sourceanalysis(cfg, freqAll);
+
+% apply pre-computer filter to both conditions seperately
+cfg.sourcemodel.filter = sourceAll.avg.filter;
+sourcePre_con  = ft_sourceanalysis(cfg, freqPre );
+sourcePost_con = ft_sourceanalysis(cfg, freqPost);
+
+save sourcePre_con sourcePre_con
+save sourcePost_con sourcePost_con
+
+% compute contrast (post-pre)/pre
+sourceDiff = sourcePost_con;
+sourceDiff.avg.pow = (sourcePost_con.avg.pow - sourcePre_con.avg.pow) ./ sourcePre_con.avg.pow;
+
+% load segmented MRI from Fieldtrip
+load segmentedmri
+
+%{ 
+% load and reslice MRI
+mri = ft_read_mri('Subject01.mri');
+mri = ft_volumereslice([], mri);
+%}
+
+% interpolate the source to the MRI
+cfg            = [];
+cfg.downsample = 2;
+cfg.parameter  = 'pow';
+sourceDiffInt  = ft_sourceinterpolate(cfg, sourceDiff , mri);
+
+% plot the power ratios
+maxval = max(sourceDiffInt.pow);
+
+cfg = [];
+cfg.method        = 'slice';
+cfg.funparameter  = 'pow';
+cfg.maskparameter = cfg.funparameter;
+cfg.funcolorlim   = [0.0 maxval];
+cfg.opacitylim    = [0.0 maxval];
+cfg.opacitymap    = 'rampup';
+ft_sourceplot(cfg, sourceDiffInt);
