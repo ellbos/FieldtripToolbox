@@ -168,4 +168,116 @@ for k = 1:20
    ft_topoplotER(cfg, raweffectFICvsFC);
 end
 
+%% Timelock statistic using planar gradiant data
+
+% add the gradiometer structure to one of the planar gradient data sets
+
+cfg = [];
+cfg.planarmethod   = 'sincos';
+cfg.neighbours     = neighbours; % also here, neighbouring sensors needs to be defined
+
+cfg_neighb              = [];
+cfg_neighb.method       = 'distance';
+neighbours              = ft_prepare_neighbours(cfg_neighb, dataFC_LP);
+cfg.neighbours          = neighbours;  % the neighbours specify for each sensor with which other sensors it can form clusters
+
+timelockFIC_planar = ft_megplanar(cfg, timelockFIC);
+timelockFC_planar  = ft_megplanar(cfg, timelockFC);
+
+timelockFIC_planar_cmb = ft_combineplanar(cfg, timelockFIC_planar);
+timelockFC_planar_cmb  = ft_combineplanar(cfg, timelockFC_planar);
+
+timelockFIC_planar_cmb.grad = timelockFIC.grad;  % add the gradiometer structure
+timelockFC_planar_cmb.grad  = timelockFC.grad;
+
+% configuration
+cfg                 = [];
+cfg.channel         = {'MEG'};
+cfg.latency         = [0 1];
+cfg.neighbours      = neighbours;
+cfg.method          = 'montecarlo';
+cfg.statistic       = 'indepsamplesT';
+cfg.correctm        = 'cluster';
+cfg.clusteralpha    = 0.05;
+cfg.clusterstatistic = 'maxsum';
+cfg.minnbchan       = 2;
+cfg.tail            = 0;
+cfg.clustertail     = 0;
+cfg.alpha           = 0.025;
+cfg.numrandomization = 100;
+
+design = zeros(1,size(timelockFIC_planar_cmb.trial,1) + size(timelockFC_planar_cmb.trial,1));
+design(1,1:size(timelockFIC_planar_cmb.trial,1)) = 1;
+design(1,(size(timelockFIC_planar_cmb.trial,1)+1):(size(timelockFIC_planar_cmb.trial,1) + size(timelockFC_planar_cmb.trial,1)))= 2;
+
+cfg.design = design;
+cfg.ivar = 1;
+
+% statistic
+[stat] = ft_timelockstatistics(cfg, timelockFIC_planar_cmb, timelockFC_planar_cmb);
+
+% save output
+save stat_ERF_planar_FICvsFC stat
+
+% load
+load stat_ERF_planar_FICvsFC
+
+% calculate the raw effect in the average
+
+cfg = [];
+cfg.keeptrials = 'no';   % now only the average, not the single trials
+avgFIC_planar = ft_timelockanalysis(cfg, timelockFIC_planar);
+avgFC_planar  = ft_timelockanalysis(cfg, timelockFC_planar);
+cfg = [];
+avgFIC_planar_cmb = ft_combineplanar(cfg, avgFIC_planar);
+avgFC_planar_cmb  = ft_combineplanar(cfg, avgFC_planar);
+
+% subtract avgFC from avgFIC
+cfg = [];
+cfg.operation = 'subtract';
+cfg.parameter = 'avg';
+raweffectFICvsFC     = ft_math(cfg, avgFIC_planar_cmb, avgFC_planar_cmb);
+
+% plot the results
+
+figure;
+timestep = 0.05; %(in seconds)
+sampling_rate = dataFC_LP.fsample;
+sample_count = length(stat.time);
+j = [0:timestep:1]; % Temporal endpoints (in seconds) of the ERP average computed in each subplot
+m = [1:timestep*sampling_rate:sample_count]; % temporal endpoints in M/EEG samples
+
+pos_cluster_pvals = [stat.posclusters(:).prob];
+
+% In case you have downloaded and loaded the data, ensure stat.cfg.alpha exist
+if ~isfield(stat.cfg,'alpha'); stat.cfg.alpha = 0.025; end % stat.cfg.alpha was moved as the downloaded data was processed by an additional FieldTrip function to anonymize the data.
+
+pos_signif_clust = find(pos_cluster_pvals < stat.cfg.alpha);
+pos = ismember(stat.posclusterslabelmat, pos_signif_clust);
+
+% Remember to do the same for negative clusters if you want them!
+neg_cluster_pvals = [stat.negclusters(:).prob];
+neg_signif_clust = find(neg_cluster_pvals < stat.cfg.alpha);
+neg = ismember(stat.negclusterslabelmat, neg_signif_clust);
+
+% First ensure the channels to have the same order in the average and in the statistical output.
+% This might not be the case, because ft_math might shuffle the order
+[i1,i2] = match_str(raweffectFICvsFC.label, stat.label);
+
+for k = 1:20
+   subplot(4,5,k);
+   cfg = [];
+   cfg.xlim =[j(k) j(k+1)];
+   cfg.zlim = [-1.0e-13 1.0e-13];
+   pos_int = zeros(numel(raweffectFICvsFC.label),1);
+   pos_int(i1) = all(pos(i2, m(k):m(k+1)), 2);
+   neg_int = zeros(numel(raweffectFICvsFC.label),1);
+   neg_int(i1) = all(neg(i2, m(k):m(k+1)), 2);
+   cfg.highlight = 'on';
+   cfg.highlightchannel = find(pos_int);
+   cfg.comment = 'xlim';
+   cfg.commentpos = 'title';
+   cfg.layout = 'CTF151_helmet.mat';
+   ft_topoplotER(cfg, raweffectFICvsFC);
+end
 
