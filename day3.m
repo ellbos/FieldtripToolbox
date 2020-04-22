@@ -31,3 +31,18 @@ cfg.trials = data_all.trialinfo == 3;
 cfg.toilim = [0.8 1.3];
 dataPost = ft_redefinetrial(cfg, data_all);
 
+%% Cross-spectral density matrix
+
+cfg = [];
+cfg.method    = 'mtmfft';
+cfg.output    = 'powandcsd';
+cfg.tapsmofrq = 4;
+cfg.foilim    = [18 18];
+freqPre = ft_freqanalysis(cfg, dataPre);
+
+cfg = [];
+cfg.method    = 'mtmfft';
+cfg.output    = 'powandcsd';
+cfg.tapsmofrq = 4;
+cfg.foilim    = [18 18];
+freqPost = ft_freqanalysis(cfg, dataPost);
