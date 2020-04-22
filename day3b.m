@@ -51,7 +51,7 @@ cfg.keeptrials = 'yes';
 timelockFIC = ft_timelockanalysis(cfg, dataFIC_LP);
 timelockFC  = ft_timelockanalysis(cfg, dataFC_LP);
 
-%% Timelock statistic
+%% Timelock statistic using axial gradiant data
 
 % configuration
 cfg = [];
