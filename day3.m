@@ -82,3 +82,59 @@ cfg.resolution = 1;   % use a 3-D grid with a 1 cm resolution
 cfg.sourcemodel.unit       = 'cm';
 grid = ft_prepare_leadfield(cfg);
 
+%% Source analysis
+
+% without contrasting condition
+
+cfg              = [];
+cfg.method       = 'dics';
+cfg.frequency    = 18;
+cfg.sourcemodel  = grid;
+cfg.headmodel    = headmodel;
+cfg.dics.projectnoise = 'yes';
+cfg.dics.lambda       = 0;
+
+sourcePost_nocon = ft_sourceanalysis(cfg, freqPost);
+
+% save the output
+save sourcePost_nocon sourcePost_nocon
+
+%{ 
+load sourcePost_nocon
+%}
+
+% align matrix with structural MRI
+mri = ft_read_mri('Subject01/Subject01.mri');
+mri = ft_volumereslice([], mri);
+
+cfg            = [];
+cfg.downsample = 2;
+cfg.parameter = 'pow';
+sourcePostInt_nocon  = ft_sourceinterpolate(cfg, sourcePost_nocon , mri);
+
+% plot interpolated data
+cfg              = [];
+cfg.method       = 'slice';
+cfg.funparameter = 'pow';
+ft_sourceplot(cfg,sourcePostInt_nocon);
+
+% neural activity index
+sourceNAI = sourcePost_nocon;
+sourceNAI.avg.pow = sourcePost_nocon.avg.pow ./ sourcePost_nocon.avg.noise;
+
+cfg = [];
+cfg.downsample = 2;
+cfg.parameter = 'pow';
+sourceNAIInt = ft_sourceinterpolate(cfg, sourceNAI , mri);
+
+% plot the result
+maxval = max(sourceNAIInt.pow);
+
+cfg = [];
+cfg.method        = 'slice';
+cfg.funparameter  = 'pow';
+cfg.maskparameter = cfg.funparameter;
+cfg.funcolorlim   = [4.0 maxval];
+cfg.opacitylim    = [4.0 maxval];
+cfg.opacitymap    = 'rampup';
+ft_sourceplot(cfg, sourceNAIInt);
