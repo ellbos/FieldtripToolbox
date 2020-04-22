@@ -90,3 +90,82 @@ save stat_ERF_axial_FICvsFC stat;
 
 % load output
 load stat_ERF_axial_FICvsFC
+
+% plot the results
+cfg = [];
+figure
+avgFIC = ft_timelockanalysis(cfg, dataFIC_LP);
+avgFC = ft_timelockanalysis(cfg, dataFC_LP);
+
+% take the difference of the averages using ft_math
+cfg  = [];
+cfg.operation = 'subtract';
+cfg.parameter = 'avg';
+raweffectFICvsFC = ft_math(cfg, avgFIC, avgFC);
+
+% determine which clusters are reliable
+
+pos_cluster_pvals = [stat.posclusters(:).prob];
+
+% find which clusters are significant, outputting their indices as held in stat.posclusters
+% In case you have downloaded and loaded the data, ensure stat.cfg.alpha exist
+if ~isfield(stat.cfg,'alpha'); stat.cfg.alpha = 0.025; end; % stat.cfg.alpha was moved as the downloaded data was processed by an additional FieldTrip function to anonymize the data.
+
+pos_signif_clust = find(pos_cluster_pvals < stat.cfg.alpha);
+% (stat.cfg.alpha is the alpha level we specified earlier for cluster comparisons; In this case, 0.025)
+% make a boolean matrix of which (channel,time)-pairs are part of a significant cluster
+pos = ismember(stat.posclusterslabelmat, pos_signif_clust);
+
+% and now for the negative clusters...
+neg_cluster_pvals = [stat.negclusters(:).prob];
+neg_signif_clust = find(neg_cluster_pvals < stat.cfg.alpha);
+neg = ismember(stat.negclusterslabelmat, neg_signif_clust);
+
+%{ 
+% alternative way:
+pos = stat.posclusterslabelmat == 1; % or == 2, or 3, etc.
+  neg = stat.negclusterslabelmat == 1;
+%}
+
+% check that the sample-based time windows align with the time windows in seconds
+timestep = 0.05; % timestep between time windows for each subplot (in seconds)
+sampling_rate = dataFC_LP.fsample; % Data has a temporal resolution of 300 Hz
+sample_count = length(stat.time);
+% number of temporal samples in the statistics object
+j = [0:timestep:1]; % Temporal endpoints (in seconds) of the ERP average computed in each subplot
+m = [1:timestep*sampling_rate:sample_count]; % temporal endpoints in M/EEG samples
+
+% plot the results
+
+% First ensure the channels to have the same order in the average and in the statistical output.
+% This might not be the case, because ft_math might shuffle the order
+[i1,i2] = match_str(raweffectFICvsFC.label, stat.label);
+
+figure
+for k = 1:20
+   subplot(4,5,k);
+   cfg = [];
+   cfg.xlim=[j(k) j(k+1)];   % time interval of the subplot
+   cfg.zlim = [-2.5e-13 2.5e-13];
+   % If a channel reaches this significance, then
+   % the element of pos_int with an index equal to that channel
+   % number will be set to 1 (otherwise 0).
+
+   % Next, check which channels are significant over the
+   % entire time interval of interest.
+   pos_int = zeros(numel(raweffectFICvsFC.label),1);
+   neg_int = zeros(numel(raweffectFICvsFC.label),1);
+   pos_int(i1) = all(pos(i2, m(k):m(k+1)), 2);
+   neg_int(i1) = all(neg(i2, m(k):m(k+1)), 2);
+
+   cfg.highlight = 'on';
+   % Get the index of each significant channel
+   cfg.highlightchannel = find(pos_int | neg_int);
+   cfg.comment = 'xlim';
+   cfg.commentpos = 'title';
+   cfg.layout = 'CTF151_helmet.mat';
+   cfg.interactive = 'no';
+   ft_topoplotER(cfg, raweffectFICvsFC);
+end
+
+
