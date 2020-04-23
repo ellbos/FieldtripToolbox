@@ -36,3 +36,10 @@ xlabel('time (s)')
 cfg = [];
 cfg.viewmode = 'vertical';  % you can also specify 'butterfly'
 ft_databrowser(cfg, data);
+
+% computation of the multivariate autoregressive model
+cfg         = [];
+cfg.order   = 5;
+cfg.toolbox = 'bsmart';
+mdata       = ft_mvaranalysis(cfg, data);
+
