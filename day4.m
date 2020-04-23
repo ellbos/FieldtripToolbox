@@ -79,3 +79,12 @@ cfg.parameter = 'grangerspctrm';
 cfg.zlim      = [0 1];
 ft_connectivityplot(cfg, granger);
 
+figure          % low-level plot
+for row=1:3
+for col=1:3
+  subplot(3,3,(row-1)*3+col);
+  plot(granger.freq, squeeze(granger.grangerspctrm(row,col,:)))
+  ylim([0 1])
+end
+end
+
