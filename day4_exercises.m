@@ -71,11 +71,17 @@ ft_connectivityplot(cfg, coh, cohm);
 % estimate the spectral transfer matrix from the multivariate autoregressive model
 cfg           = [];
 cfg.method    = 'granger';
-granger       = ft_connectivityanalysis(cfg, mfreq);
+granger_mfreq = ft_connectivityanalysis(cfg, mfreq);
+granger_freq  = ft_connectivityanalysis(cfg, freq);
 
 figure;         % plot
 cfg           = [];
+subplot(121)
 cfg.parameter = 'grangerspctrm';
 cfg.zlim      = [0 1];
-ft_connectivityplot(cfg, granger);
+ft_connectivityplot(cfg, granger_mfreq);
+subplot(122)
+cfg.parameter = 'grangerspctrm';
+cfg.zlim      = [0 1];
+ft_connectivityplot(cfg, granger_freq);
 
