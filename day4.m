@@ -47,3 +47,12 @@ mdata       = ft_mvaranalysis(cfg, data);
 cfg        = [];
 cfg.method = 'mvar';
 mfreq      = ft_freqanalysis(cfg, mdata);
+
+% non-parametric computation of the cross-spectral density matrix
+cfg           = [];
+cfg.method    = 'mtmfft';
+cfg.taper     = 'dpss';
+cfg.output    = 'fourier';
+cfg.tapsmofrq = 2;
+freq          = ft_freqanalysis(cfg, data);
+
