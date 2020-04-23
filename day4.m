@@ -43,3 +43,7 @@ cfg.order   = 5;
 cfg.toolbox = 'bsmart';
 mdata       = ft_mvaranalysis(cfg, data);
 
+% computation of the spectral transfer function
+cfg        = [];
+cfg.method = 'mvar';
+mfreq      = ft_freqanalysis(cfg, mdata);
