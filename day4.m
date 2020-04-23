@@ -66,4 +66,16 @@ figure        % plot
 cfg           = [];
 cfg.parameter = 'cohspctrm';
 cfg.zlim      = [0 1];
-ft_connectivityplot(cfg, coh, cohm);   
+ft_connectivityplot(cfg, coh, cohm);
+
+% estimate the spectral transfer matrix from the multivariate autoregressive model
+cfg           = [];
+cfg.method    = 'granger';
+granger       = ft_connectivityanalysis(cfg, mfreq);
+
+figure;         % plot
+cfg           = [];
+cfg.parameter = 'grangerspctrm';
+cfg.zlim      = [0 1];
+ft_connectivityplot(cfg, granger);
+
