@@ -56,3 +56,14 @@ cfg.output    = 'fourier';
 cfg.tapsmofrq = 2;
 freq          = ft_freqanalysis(cfg, data);
 
+% computation and inspection of the connectivity measures
+cfg           = [];
+cfg.method    = 'coh';
+coh           = ft_connectivityanalysis(cfg, freq);
+cohm          = ft_connectivityanalysis(cfg, mfreq);
+
+figure        % plot
+cfg           = [];
+cfg.parameter = 'cohspctrm';
+cfg.zlim      = [0 1];
+ft_connectivityplot(cfg, coh, cohm);   
