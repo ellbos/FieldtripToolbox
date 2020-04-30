@@ -95,8 +95,8 @@ nSamples = 1000;
 fsample  = 1000;
 
 % mixing matrix
-mixing   = [0.8 0.2 0;
-              0 0.2 0.8];
+mixing   = [0.9 0.1 0;
+            0 0.2 0.8];
 
 data       = [];
 data.trial = cell(1,nTrials);
